@@ -114,7 +114,7 @@ function setupAdminPanel() {
         showToast('Admin authenticated successfully!', 'success');
       } else {
         if (adminAuthError) {
-          adminAuthError.textContent = 'Incorrect password! (Default is Mine1212)';
+          adminAuthError.textContent = 'Incorrect password!';
           adminAuthError.classList.remove('hidden');
         }
         showToast('Invalid admin password', 'warning');
