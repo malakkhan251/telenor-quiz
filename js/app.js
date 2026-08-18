@@ -137,7 +137,11 @@ class QuizStore {
       localStorage.setItem(this.versionKey, DATA_VERSION);
     }
 
-    if (!localStorage.getItem(this.adminPassKey)) {
+    // Keep the admin password in sync with the current default. Legacy
+    // browsers may still hold the old 'admin123' value from an earlier build,
+    // which would otherwise shadow the real password and block login.
+    const storedPass = localStorage.getItem(this.adminPassKey);
+    if (!storedPass || storedPass === 'admin123') {
       localStorage.setItem(this.adminPassKey, 'Mine1212');
     }
   }
