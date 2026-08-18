@@ -398,7 +398,7 @@ function renderSingleQuestionView(q, index, total) {
       <!-- Question Text -->
       <div>
         <h3 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white leading-snug">
-          Q${index + 1}: ${escapeHtml(q.question)}
+          ${escapeHtml(q.question)}
         </h3>
       </div>
 
@@ -474,7 +474,7 @@ function renderAllQuestionsView(questions) {
             </div>
 
             <h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
-              Q${idx + 1}: ${escapeHtml(q.question)}
+              ${escapeHtml(q.question)}
             </h4>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
