@@ -464,16 +464,16 @@ function renderAllQuestionsView(questions) {
         </span>
       </div>
 
-      <div class="space-y-6">
+      <div class="space-y-4">
         ${questions.map((q, idx) => `
-          <div class="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 space-y-4">
+          <div class="space-y-4 ${idx > 0 ? 'pt-5 border-t border-slate-200 dark:border-slate-800' : ''}">
             <div class="flex items-center justify-between">
               <span class="px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-extrabold text-xs">
                 Question ${idx + 1}
               </span>
             </div>
 
-            <h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+            <h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
               Q${idx + 1}: ${escapeHtml(q.question)}
             </h4>
 
@@ -481,7 +481,7 @@ function renderAllQuestionsView(questions) {
               ${renderOptionsGrid(q, idx)}
             </div>
 
-            <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
+            <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-wrap items-center justify-between gap-2">
               <span class="text-xs font-extrabold uppercase text-emerald-700 dark:text-emerald-300">Verified Answer:</span>
               <span class="text-sm font-black text-slate-900 dark:text-white flex items-center gap-1">
                 <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
