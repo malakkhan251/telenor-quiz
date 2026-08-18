@@ -135,7 +135,8 @@ class QuizStore {
     }
   }
 
-  // Safe localStorage parse helper
+  // Admin password: Mine1212 (updated from default admin123)
+  // Stored in localStorage per browser
   _safeGet(key) {
     try {
       return JSON.parse(localStorage.getItem(key));
