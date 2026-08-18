@@ -94,7 +94,7 @@ let activeQIndex = 0; // 0 to 4
 let currentViewMode = 'tab'; // 'tab' | 'all'
 
 // Data version fingerprint — bump this string whenever questions change
-const DATA_VERSION = 'aug09-2026-v1';
+const DATA_VERSION = 'aug18-2026-v1';
 // so localStorage is force-cleared on next page load.
 
 // Store Management
