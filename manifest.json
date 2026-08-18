@@ -1,0 +1,16 @@
+{
+  "name": "Telenor Daily Quiz Answers",
+  "short_name": "Telenor Quiz",
+  "description": "Check today's correct Telenor Play & Win daily quiz answer in seconds.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#00c853",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300c853'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

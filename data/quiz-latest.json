@@ -1,0 +1,75 @@
+{
+  "id": "quiz-latest",
+  "date": "2026-08-09",
+  "formattedDate": "Sunday, August 9, 2026",
+  "category": "MyTelenor App - Play & Win",
+  "lastUpdated": "Today at 06:48 PM",
+  "updatedTimestamp": 1786283294822,
+  "questions": [
+    {
+      "id": 1,
+      "questionNumber": 1,
+      "question": "“Hazaron___ aisi ke har khwahish pe dam nikla”",
+      "options": {
+        "A": "Raatein",
+        "B": "Yadein",
+        "C": "Baatein",
+        "D": "Khwahishen"
+      },
+      "correctAnswer": "D",
+      "reward": "20 MBs"
+    },
+    {
+      "id": 2,
+      "questionNumber": 2,
+      "question": "“Mujh se pehli se___mere mehboob na maang”",
+      "options": {
+        "A": "Mohabbat",
+        "B": "Zindagi",
+        "C": "Khushi",
+        "D": "Wafaa"
+      },
+      "correctAnswer": "A",
+      "reward": "20 MBs"
+    },
+    {
+      "id": 3,
+      "questionNumber": 3,
+      "question": "“Na tha kuch to___tha, kuch na hota to khuda hota”",
+      "options": {
+        "A": "Ishq",
+        "B": "Khuda",
+        "C": "Main",
+        "D": "Waqt"
+      },
+      "correctAnswer": "B",
+      "reward": "20 MBs"
+    },
+    {
+      "id": 4,
+      "questionNumber": 4,
+      "question": "Who wrote “Shikwa”and “Jawab-e-Shikwa?",
+      "options": {
+        "A": "Ghalib",
+        "B": "Faiz",
+        "C": "Allama Iqbal",
+        "D": "Hali"
+      },
+      "correctAnswer": "C",
+      "reward": "20 MBs"
+    },
+    {
+      "id": 5,
+      "questionNumber": 5,
+      "question": "“Dil-e-nadaan tujhe hua kya hai” is by___.",
+      "options": {
+        "A": "Iqbal",
+        "B": "Faiz",
+        "C": "Ghalib",
+        "D": "Mir Taqi Mir"
+      },
+      "correctAnswer": "C",
+      "reward": "20 MBs"
+    }
+  ]
+}

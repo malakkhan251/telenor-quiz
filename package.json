@@ -1,0 +1,16 @@
+{
+  "name": "telenor-quiz-auto-fetch",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Automated daily fetcher for Telenor Play & Win quiz answers",
+  "main": "auto-fetch.js",
+  "scripts": {
+    "fetch": "node auto-fetch.js",
+    "serve": "node scrape-server.js",
+    "test": "node auto-fetch.js --test"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "node-fetch": "^3.3.2"
+  }
+}

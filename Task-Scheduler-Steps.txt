@@ -1,0 +1,60 @@
+Task Scheduler — Daily Telenor Quiz Auto-Fetch (12:05 AM)
+========================================================
+
+Project folder : E:\My Project work\Telenor Questions Project
+Script to run   : auto-fetch.js  (uses absolute paths, so "Start in" is only a fallback)
+
+STEPS
+-----
+1. Open Task Scheduler
+   - Press Win + R, type:  taskschd.msc   → Enter
+   - Menu: Action → Create Task...  (use "Create Task", NOT "Basic Task").
+
+2. General tab
+   - Name:  Telenor Quiz Auto-Fetch
+   - Check: "Run whether user or group is logged on or not"
+   - Check: "Run with highest privileges"
+
+3. Triggers tab → New...
+   - Begin the task : On a schedule
+   - Schedule       : Daily
+   - Recur every    : 1 day
+   - Start          : 12:05:00 AM
+   - Check "Enabled" → OK
+
+4. Actions tab → New...
+   - Action    : Start a program
+   - Program   : node
+       (if "node" is not found, browse to:  C:\Program Files\nodejs\node.exe )
+   - Add arguments : "E:\My Project work\Telenor Questions Project\auto-fetch.js"
+   - Start in      : E:\My Project work\Telenor Questions Project
+   - OK
+
+5. Conditions tab
+   - Check: "Wake the computer to run this task"
+   - OK
+
+6. Settings tab
+   - Check: "Run task as soon as possible after a scheduled start is missed"
+   - OK
+
+7. Click OK on the main dialog.
+   - You will be prompted for your Windows password → type it and press Enter.
+
+8. Enable wake timers (so the laptop actually wakes at midnight):
+   - Control Panel → Power Options → Change plan settings →
+     Change advanced power settings...
+   - Sleep → "Allow wake timers" → Enable (plugged in and/or on battery)
+   - (Some laptops also need: BIOS/UEFI → Power → "Wake on RTC" / "Resume by Alarm" → Enabled)
+
+HOW TO VERIFY
+-------------
+- Right-click the task in Task Scheduler → Run.
+- Open:  E:\My Project work\Telenor Questions Project\logs\fetch-log.txt
+- You should see lines like:
+    ✅ data/quiz-latest.json updated for <Today+1>
+    ✅ DATA_VERSION set to "aug06-2026-v1" in js/app.js
+
+NOTE: Using "node auto-fetch.js" directly (instead of run-quiz-fetch.bat) in the task
+avoids the "pause" prompt that hangs when no one is logged on. The
+run-quiz-fetch.bat file is still there for manual double-click runs.
