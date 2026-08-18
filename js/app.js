@@ -131,7 +131,7 @@ class QuizStore {
     }
 
     if (!localStorage.getItem(this.adminPassKey)) {
-      localStorage.setItem(this.adminPassKey, 'admin123');
+      localStorage.setItem(this.adminPassKey, 'Mine1212');
     }
   }
 
@@ -169,7 +169,7 @@ class QuizStore {
   }
 
   getAdminPassword() {
-    return localStorage.getItem(this.adminPassKey) || 'admin123';
+    return localStorage.getItem(this.adminPassKey) || 'Mine1212';
   }
 
   setAdminPassword(newPassword) {
