@@ -76,7 +76,6 @@ function setupAdminPanel() {
   const editOptionB = document.getElementById('edit-option-b');
   const editOptionC = document.getElementById('edit-option-c');
   const editOptionD = document.getElementById('edit-option-d');
-  const editReward = document.getElementById('edit-reward');
   const editCategory = document.getElementById('edit-category');
   const adminSaveBtn = document.getElementById('admin-save-btn');
   const adminResetBtn = document.getElementById('admin-reset-btn');
@@ -115,7 +114,7 @@ function setupAdminPanel() {
         showToast('Admin authenticated successfully!', 'success');
       } else {
         if (adminAuthError) {
-          adminAuthError.textContent = 'Incorrect password! (Default is admin123)';
+          adminAuthError.textContent = 'Incorrect password! (Default is Mine1212)';
           adminAuthError.classList.remove('hidden');
         }
         showToast('Invalid admin password', 'warning');

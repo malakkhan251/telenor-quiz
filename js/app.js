@@ -83,19 +83,26 @@ const DEFAULT_QUIZ = {
   questions: DEFAULT_QUESTIONS
 };
 
-// Helper: Format Current Date nicely
+// Helper: Format Current Date nicely (Pakistan timezone for consistency with server)
 function getFormattedCurrentDate() {
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date().toLocaleDateString('en-US', options);
+  return new Date().toLocaleString('en-US', { ...options, timeZone: 'Asia/Karachi' });
+}
+
+// Today's date string (YYYY-MM-DD) in Pakistan time, matching server-side
+// data/quiz-latest.json so date comparisons are consistent across timezones.
+function getTodayPkStr() {
+  return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' })).toISOString().split('T')[0];
 }
 
 // Active State
 let activeQIndex = 0; // 0 to 4
 let currentViewMode = 'tab'; // 'tab' | 'all'
 
-// Data version fingerprint — bump this string whenever questions change
+// Data version fingerprint — updated by the fetch script whenever the quiz is
+// republished. It is tracked for traceability but does NOT force a reset:
+// localStorage keeps the last published quiz until a new one arrives.
 const DATA_VERSION = 'aug18-2026-v1';
-// so localStorage is force-cleared on next page load.
 
 // Store Management
 class QuizStore {
@@ -107,17 +114,17 @@ class QuizStore {
   }
 
   init() {
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = getTodayPkStr();
     const stored = this._safeGet(this.storageKey);
-    const storedVersion = localStorage.getItem(this.versionKey);
 
-    // Reset if: no data, wrong question count, stale date, OR version mismatch
+    // Reset ONLY if there is no usable data at all. We deliberately do NOT
+    // reset on a stale date or a DATA_VERSION mismatch: when the date rolls
+    // over (e.g. 12th -> 13th) before the new quiz is published, the previous
+    // day's quiz keeps showing until data/quiz-latest.json is updated.
     const needsReset =
       !stored ||
       !Array.isArray(stored.questions) ||
-      stored.questions.length !== 5 ||
-      stored.date !== todayStr ||
-      storedVersion !== DATA_VERSION; // <-- Force reset when questions are updated
+      stored.questions.length !== 5;
 
     if (needsReset) {
       const freshQuiz = {
@@ -137,6 +144,7 @@ class QuizStore {
 
   // Admin password: Mine1212 (updated from default admin123)
   // Stored in localStorage per browser
+  // Safe localStorage parse helper
   _safeGet(key) {
     try {
       return JSON.parse(localStorage.getItem(key));
@@ -157,15 +165,18 @@ class QuizStore {
     }
   }
 
-  saveQuiz(quizData) {
+  saveQuiz(quizData, { silent = false } = {}) {
     const updated = {
       ...quizData,
-      lastUpdated: `Today at ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`,
+      lastUpdated: `Today at ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Karachi' })}`,
       updatedTimestamp: Date.now()
     };
     localStorage.setItem(this.storageKey, JSON.stringify(updated));
-    // Trigger custom event for real-time app update
-    window.dispatchEvent(new CustomEvent('quizUpdated', { detail: updated }));
+    // Trigger custom event for real-time app update (skipped for silent syncs
+    // like a plain page refresh where the data has not actually changed)
+    if (!silent) {
+      window.dispatchEvent(new CustomEvent('quizUpdated', { detail: updated }));
+    }
     return updated;
   }
 
@@ -188,13 +199,24 @@ async function syncLiveQuizData(force = false) {
       const liveData = await response.json();
       if (liveData && Array.isArray(liveData.questions) && liveData.questions.length === 5) {
         const currentLocal = store.getQuiz();
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = getTodayPkStr();
         const liveTimestamp = Number(liveData.updatedTimestamp || 0);
         const currentTimestamp = Number(currentLocal.updatedTimestamp || 0);
 
-        // Sync if forced, or if local is older than today, or if live file is newer
-        if (force || currentLocal.date !== todayStr || liveTimestamp > currentTimestamp) {
-          store.saveQuiz(liveData);
+        // Detect an actual content/date change so a plain page refresh does not
+        // fire the "quiz updated" toast for data that is already shown.
+        const contentChanged =
+          liveData.date !== currentLocal.date ||
+          JSON.stringify(liveData.questions) !== JSON.stringify(currentLocal.questions);
+
+        // Sync if forced, or the quiz changed, or local is older than today,
+        // or the live file is newer.
+        const shouldSync =
+          force || contentChanged || currentLocal.date !== todayStr || liveTimestamp > currentTimestamp;
+
+        if (shouldSync) {
+          // Toast only when the quiz really changed; keep identical refreshes silent.
+          store.saveQuiz(liveData, { silent: !contentChanged });
           renderQuiz();
           return true;
         }
@@ -554,15 +576,18 @@ function startCountdownTimer() {
 
   let hasTriggeredAutoSync = false;
 
+  // Absolute timestamp of the next Pakistan (Asia/Karachi) midnight, when the
+  // quiz actually resets. Computed from PK wall-clock so it is correct for
+  // visitors in any browser timezone.
+  function getNextPkMidnight() {
+    const pkNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' }));
+    const pkToday = Date.UTC(pkNow.getUTCFullYear(), pkNow.getUTCMonth(), pkNow.getUTCDate());
+    return pkToday + 24 * 60 * 60 * 1000;
+  }
+
   function update() {
     const now = new Date();
-    const target = new Date();
-    target.setHours(0, 0, 0, 0);
-
-    // Target next 12:00 AM Midnight
-    if (now >= target) {
-      target.setDate(target.getDate() + 1);
-    }
+    const target = getNextPkMidnight();
 
     const diff = target - now;
 
@@ -720,7 +745,7 @@ function showToast(message, type = 'info') {
   if (!toastContainer) {
     toastContainer = document.createElement('div');
     toastContainer.id = 'toast-container';
-    toastContainer.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none w-full max-w-sm px-4';
+    toastContainer.className = 'toast-container';
     document.body.appendChild(toastContainer);
   }
 
@@ -747,7 +772,7 @@ function showToast(message, type = 'info') {
 
   setTimeout(() => {
     toast.style.opacity = '0';
-    toast.style.transform = 'translate(-50%, 10px)';
+    toast.style.transform = 'translateY(10px)';
     toast.style.transition = 'all 0.3s ease';
     setTimeout(() => toast.remove(), 300);
   }, 3200);

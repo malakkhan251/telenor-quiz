@@ -110,15 +110,34 @@ body {
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
 }
 
-/* Toast animation */
+/* Toast container — plain CSS so mobile centering never depends on the
+   (dynamically loaded) Tailwind CDN classes. */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+  width: 100%;
+  max-width: 24rem;
+  padding: 0 1rem;
+}
+
+/* Toast animation — translateY only. The container is already centered by
+   .toast-container, so any -50% X offset would push the toast half off-screen. */
 @keyframes slideUpFade {
   from {
     opacity: 0;
-    transform: translate(-50%, 20px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: translateY(0);
   }
 }
 

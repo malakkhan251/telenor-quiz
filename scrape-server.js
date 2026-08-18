@@ -162,10 +162,13 @@ server.listen(PORT, () => {
   log(`══════════════════════════════════════════`);
   // Auto-open the admin panel in your default browser so the
   // "Auto Scrap" button has a live server to talk to.
-  const adminUrl = `http://localhost:${PORT}/?admin=true`;
-  try {
-    if (process.platform === 'win32') exec(`start "" "${adminUrl}"`);
-    else if (process.platform === 'darwin') exec(`open "${adminUrl}"`);
-    else exec(`xdg-open "${adminUrl}"`);
-  } catch (_) { /* non-fatal: server still works */ }
+  // Disable with OPEN_ADMIN_PANEL=false (or any falsey value).
+  if (process.env.OPEN_ADMIN_PANEL !== 'false' && process.env.OPEN_ADMIN_PANEL !== '0') {
+    const adminUrl = `http://localhost:${PORT}/?admin=true`;
+    try {
+      if (process.platform === 'win32') exec(`start "" "${adminUrl}"`);
+      else if (process.platform === 'darwin') exec(`open "${adminUrl}"`);
+      else exec(`xdg-open "${adminUrl}"`);
+    } catch (_) { /* non-fatal: server still works */ }
+  }
 });

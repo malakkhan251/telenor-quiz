@@ -19,9 +19,10 @@
  * ============================================================
  */
 
+import fs from 'fs';
 import fetch from 'node-fetch';
 import { autoFetchLatest, validateQuestions } from './scrapers.js';
-import { log, getTodayStr, getFormattedDate, persistQuiz } from './quiz-io.js';
+import { log, getTodayStr, getFormattedDate, persistQuiz, JSON_PATH } from './quiz-io.js';
 
 // ============================================================
 // ⚙️  CONFIGURATION — EDIT THIS SECTION ONLY
@@ -51,6 +52,20 @@ const FALLBACK_QUESTION_POOLS = [
 function getFallbackQuiz() {
   const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
   return FALLBACK_QUESTION_POOLS[dayOfYear % FALLBACK_QUESTION_POOLS.length];
+}
+
+// Read the currently published quiz from disk (if any) so we can keep it when
+// no live source is available, instead of overwriting it with the fallback on
+// a fresh day before the owner has updated the new quiz.
+function readPublishedQuiz() {
+  try {
+    if (!fs.existsSync(JSON_PATH)) return null;
+    const data = JSON.parse(fs.readFileSync(JSON_PATH, 'utf8'));
+    if (Array.isArray(data.questions) && data.questions.length === 5 && validateQuestions(data.questions)) {
+      return data.questions;
+    }
+  } catch (_) { }
+  return null;
 }
 
 // ── Gemini API Call with Model Fallback & Retries ─────────────
@@ -96,7 +111,15 @@ Rules:
 - Return ONLY the raw JSON, nothing else
 `;
 
+  // Track whether Google's API is having infrastructure issues (503 UNAVAILABLE,
+  // e.g. "Upstream request failed: Endpoint is unavailable."). These affect all
+  // Gemini models (shared backends), so once we hit one we stop trying the
+  // remaining models and let the caller fall through to web scraping sooner.
+  let sawServerError = false;
+
   for (const model of models) {
+    if (sawServerError) break;
+
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
     log(`Attempting fetch using model: ${model}...`);
 
@@ -111,16 +134,32 @@ Rules:
           })
         });
 
+        // 429: rate limited → wait and retry once
         if (response.status === 429) {
-          log(`⚠️ Rate limit (429) on ${model} (Attempt ${attempt}). Waiting 14s...`);
-          await new Promise(res => setTimeout(res, 14000));
+          log(`⚠️ Rate limit (429) on ${model} (Attempt ${attempt}/2). Waiting 10s...`);
+          await new Promise(res => setTimeout(res, 10000));
           continue;
+        }
+
+        // 5xx (incl. 503 "Upstream request failed: Endpoint is unavailable."):
+        // transient Google-side outage → retry briefly, then stop trying Gemini
+        // entirely so we fall through to web scraping without long delays.
+        if (response.status >= 500) {
+          const errText = await response.text();
+          sawServerError = true;
+          if (attempt < 2) {
+            log(`⚠️ Google Gemini API temporarily unavailable (HTTP ${response.status}) on ${model}. Retrying in 5s...`);
+            await new Promise(res => setTimeout(res, 5000));
+            continue;
+          }
+          log('⚠️ Google Gemini API is temporarily unavailable (HTTP 503). Skipping Gemini, falling through to web scraping...');
+          break;
         }
 
         if (!response.ok) {
           const errText = await response.text();
           log(`⚠️ Model ${model} returned HTTP ${response.status}: ${errText.slice(0, 150)}`);
-          break; // try next model
+          break; // try next model (non-retryable error)
         }
 
         const data = await response.json();
@@ -130,12 +169,16 @@ Rules:
           return rawText;
         }
       } catch (err) {
-        log(`⚠️ Fetch failed for ${model}: ${err.message}`);
+        log(`⚠️ Fetch failed for ${model} (Attempt ${attempt}/2): ${err.message}`);
+        if (attempt < 2) {
+          log('   Retrying in 3s...');
+          await new Promise(res => setTimeout(res, 3000));
+        }
       }
     }
   }
 
-  log('⚠️ All Gemini API models quota limited or unavailable. Using Smart Local Fallback Quiz...');
+  log('⚠️ Gemini API unavailable. Falling through to web scraping...');
   return null;
 }
 
@@ -232,9 +275,19 @@ async function main() {
     }
   }
 
-  // Tier 3: verified local fallback dataset
+  // Tier 3: no live source — keep the previously published quiz if one exists.
+  // We never overwrite a good quiz with fallback questions on a new day, so
+  // the site keeps showing the last real answers until the owner updates.
   if (!questions) {
-    log('ℹ️ No live source available. Using verified fallback quiz dataset for today.');
+    const previous = readPublishedQuiz();
+    if (previous) {
+      log('ℹ️ No live source available. Keeping the previously published quiz (no overwrite).');
+      log('══════════════════════════════════════════');
+      log('  ⚠️ Done — previous quiz retained on your website.');
+      log('══════════════════════════════════════════');
+      return;
+    }
+    log('ℹ️ No live source and no previous quiz found. Using verified fallback quiz dataset.');
     questions = getFallbackQuiz();
     sourceLabel = 'fallback dataset';
   }

@@ -143,15 +143,21 @@ export function parseQuizHtml(html, sourceUrl = '') {
     });
   }
 
-  // Fallback: bold "Answer: X" labels or "Correct Answer:" text anywhere in content
+  // Fallback: "Answer: X" or "Correct Answer: X" labels at the start of
+  // individual paragraph/list-item/div elements. This is more targeted than
+  // scanning allText (which can match answer keywords inside question text
+  // or option descriptions), and avoids false positives like matching the
+  // letter from "Answer: A, B, C, or D".
   if (answerSpans.length < 5) {
     answerSpans = [];
-    const allText = $root.text();
-    const re = /(?:Correct\s*Answer|Answer)\s*(?::|\.|-)?\s*([A-D])\b/gi;
-    let m;
-    while ((m = re.exec(allText)) !== null) {
-      answerSpans.push(m[1].toUpperCase());
-    }
+    const elRx = /^(?:Correct\s*Answer|Answer)\s*(?::|\.|-)?\s*([A-D])(?:\s|$)/i;
+    $root.find('p, li, div').each((_, el) => {
+      const t = $(el).text().trim();
+      const m = t.match(elRx);
+      if (m && answerSpans.length < 5) {
+        answerSpans.push(m[1].toUpperCase());
+      }
+    });
   }
 
   const MIN_QS = 5;
