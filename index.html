@@ -333,6 +333,12 @@
             </svg>
             <span>Activate Auto Scraper + Run Now</span>
           </button>
+          <p id="admin-local-only-note" class="hidden text-[11px] leading-relaxed text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-xl px-3 py-2 mt-2">
+            You're on the published site — the scrape/fetch buttons are disabled here.
+            To publish a scraped quiz: run <code class="font-mono">npm start</code> on your computer,
+            open <code class="font-mono">http://localhost:3000</code>, use the auto-scraper there,
+            then commit &amp; push <code class="font-mono">data/quiz-latest.json</code> to GitHub.
+          </p>
 
           <div class="mt-3 space-y-2 rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-slate-50/70 dark:bg-slate-900/40">
             <label class="block text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">Fetch New Quiz From Website URL</label>

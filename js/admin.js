@@ -92,6 +92,23 @@ function setupAdminPanel() {
   const fetchUrlBtn = document.getElementById('admin-fetch-url-btn');
   const sourceUrlInput = document.getElementById('admin-source-url-input');
 
+  // The scrape API only exists on the local `npm start` server (scrape-server.js),
+  // which is what writes data/quiz-latest.json + bumps DATA_VERSION. On the
+  // published GitHub Pages site those calls hit http://localhost:3000 on the
+  // visitor's machine and always fail, so disable them and explain why.
+  const hostname = window.location.hostname || '';
+  const isLiveSite = hostname !== 'localhost' && hostname !== '127.0.0.1';
+  if (isLiveSite) {
+    [autoSyncBtn, fetchUrlBtn, sourceUrlInput].forEach((el) => {
+      if (el) {
+        el.disabled = true;
+        el.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+      }
+    });
+    const note = document.getElementById('admin-local-only-note');
+    if (note) note.classList.remove('hidden');
+  }
+
   // Handle Login Authentication
   if (adminAuthForm) {
     adminAuthForm.addEventListener('submit', (e) => {

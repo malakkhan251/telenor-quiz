@@ -247,32 +247,35 @@ async function main() {
   let sourceFormattedDate = formattedDate;
   let sourceLabel = 'unknown';
 
-  // Tier 1: Google Gemini API (requires a real API key)
-  if (GEMINI_API_KEY && GEMINI_API_KEY !== 'PASTE_YOUR_GEMINI_API_KEY_HERE') {
-    const rawText = await fetchQuizFromGemini(formattedDate);
-    questions = parseAndValidate(rawText);
-    if (questions) sourceLabel = 'Gemini API';
-  } else {
-    log('ℹ️ No Gemini API key provided.');
+  // Tier 1: scrape public Telenor answer sites (preferred — real published
+  // answers, and autoFetchLatest already skips stale/yesterday quizzes).
+  log('ℹ️ Trying web scrape of public answer sites...');
+  try {
+    const scraped = await autoFetchLatest();
+    if (scraped && validateQuestions(scraped.questions)) {
+      questions = scraped.questions;
+      sourceDateStr = scraped.date || dateStr;
+      sourceFormattedDate = scraped.formattedDate || formattedDate;
+      sourceLabel = `web-scrape (${new URL(scraped.source).hostname})`;
+      log(`✅ Live answers scraped from ${scraped.source}`);
+    } else {
+      log('ℹ️ Web scrape did not yield 5 valid, today-dated questions.');
+    }
+  } catch (err) {
+    log(`⚠️ Web scrape error: ${err.message}`);
   }
 
-  // Tier 2: scrape public Telenor answer sites (works with no API key)
-  if (!questions) {
-    log('ℹ️ No live API results. Trying web scrape of public answer sites...');
-    try {
-      const scraped = await autoFetchLatest();
-      if (scraped && validateQuestions(scraped.questions)) {
-        questions = scraped.questions;
-        sourceDateStr = scraped.date || dateStr;
-        sourceFormattedDate = scraped.formattedDate || formattedDate;
-        sourceLabel = `web-scrape (${new URL(scraped.source).hostname})`;
-        log(`✅ Live answers scraped from ${scraped.source}`);
-      } else {
-        log('ℹ️ Web scrape did not yield 5 valid questions.');
-      }
-    } catch (err) {
-      log(`⚠️ Web scrape error: ${err.message}`);
-    }
+  // Tier 2: Google Gemini API as a FALLBACK only (requires a real API key).
+  // Gemini output is AI-generated and structurally validated but NOT factually
+  // verified, so it must never override a real published scrape.
+  if (!questions && GEMINI_API_KEY && GEMINI_API_KEY !== 'PASTE_YOUR_GEMINI_API_KEY_HERE') {
+    log('ℹ️ No valid scrape. Trying Google Gemini AI as a fallback...');
+    log('⚠️ Gemini answers are AI-generated and unverified — publish with caution.');
+    const rawText = await fetchQuizFromGemini(formattedDate);
+    questions = parseAndValidate(rawText);
+    if (questions) sourceLabel = 'Gemini AI (unverified)';
+  } else if (!questions) {
+    log('ℹ️ No Gemini API key provided (or scrape succeeded).');
   }
 
   // Tier 3: no live source — keep the previously published quiz if one exists.

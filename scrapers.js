@@ -13,6 +13,7 @@
 import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
 import { pathToFileURL } from 'url';
+import { getTodayStr, log } from './quiz-io.js';
 
 // Sources tried in order by autoFetchLatest(). These are independent
 // info sites that publish the daily 5-question quiz answers publicly.
@@ -67,6 +68,14 @@ export function validateQuestions(questions) {
   return true;
 }
 
+// True when a scraped quiz is dated earlier than today (Pakistan time).
+// Daily answer pages often keep yesterday's post up until the sites update,
+// so we refuse to publish a stale quiz as today's.
+export function isStaleQuiz(dateStr) {
+  if (!dateStr) return false;
+  return dateStr !== getTodayStr();
+}
+
 // Strip a leading "Question N" marker, leaving the real question text.
 function cleanQuestionText(text) {
   return String(text || '').replace(/^question\s*\d+\s*[:.\)]*\s*/i, '').trim();
@@ -98,7 +107,9 @@ function matchAnswerToLetter(answerText, options) {
   idx = keys.findIndex(k => at.includes(norm(options[k])) && norm(options[k]).length > 0);
   if (idx !== -1) return keys[idx];
 
-  return 'A';
+  // No reliable match — return null so the caller treats the source as unusable
+  // instead of silently guessing 'A' and publishing a wrong answer.
+  return null;
 }
 
 // Parse a single source's HTML into a quiz, or return null.
@@ -167,8 +178,13 @@ export function parseQuizHtml(html, sourceUrl = '') {
     for (let i = 0; i < MIN_QS; i++) {
       const opts = optionSpans.slice(i * 4, i * 4 + 4);
       if (opts.length !== 4) { ok = false; break; }
+      // Reject groups with empty or duplicate options (layout drift often
+      // produces repeated/blank spans that would silently map to A-D).
+      const optSet = new Set(opts.map((o) => String(o || '').trim().toLowerCase()));
+      if (optSet.size !== 4) { ok = false; break; }
       const optMap = { A: opts[0], B: opts[1], C: opts[2], D: opts[3] };
       const correctAnswer = matchAnswerToLetter(answerSpans[i], optMap);
+      if (!correctAnswer) { ok = false; break; }
       questions.push({
         id: i + 1,
         questionNumber: i + 1,
@@ -233,12 +249,17 @@ export async function scrapeQuiz(url, { signal } = {}) {
   return result;
 }
 
-// Try sources in order until one yields 5 valid questions.
+// Try sources in order until one yields 5 valid, today-dated questions.
 export async function autoFetchLatest({ signal } = {}) {
   for (const url of SOURCE_URLS) {
     try {
       const result = await scrapeQuiz(url, { signal });
-      if (result) return result;
+      if (!result) continue;
+      if (isStaleQuiz(result.date)) {
+        log(`⚠️ Skipping ${url} — quiz dated ${result.date} is not today's (PK time).`);
+        continue;
+      }
+      return result;
     } catch {
       continue;
     }
@@ -249,7 +270,7 @@ export async function autoFetchLatest({ signal } = {}) {
 // CLI: `node scrapers.js` scrapes sources and prints the JSON result.
 // This must ONLY run when scrapers.js is the direct entry module, not when it
 // is merely imported by auto-fetch.js / scrape-server.js.
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   autoFetchLatest().then((r) => {
     if (!r) { console.log(JSON.stringify({ ok: false, error: 'no source yielded 5 questions' }, null, 2)); process.exit(0); }
     console.log(JSON.stringify({ ok: true, source: r.source, quiz: { id: 'quiz-latest', date: r.date, formattedDate: r.formattedDate, category: 'MyTelenor App - Play & Win', questions: r.questions } }, null, 2));

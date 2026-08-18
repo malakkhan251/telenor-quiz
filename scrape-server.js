@@ -17,7 +17,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { exec } from 'child_process';
-import { autoFetchLatest, scrapeQuiz, validateQuestions } from './scrapers.js';
+import { autoFetchLatest, scrapeQuiz, validateQuestions, isStaleQuiz, SOURCE_URLS } from './scrapers.js';
 import { log, persistQuiz } from './quiz-io.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -57,7 +57,11 @@ async function handleTriggerScrape(_req, res) {
     log('▶ /api/trigger-scrape: scanning sources...');
     const scraped = await autoFetchLatest();
     if (!scraped || !validateQuestions(scraped.questions)) {
-      sendJson(res, 502, { ok: false, message: 'No source yielded 5 valid questions.' });
+      sendJson(res, 502, { ok: false, message: 'No source yielded 5 valid, today-dated questions.' });
+      return;
+    }
+    if (isStaleQuiz(scraped.date)) {
+      sendJson(res, 409, { ok: false, message: `Scraped quiz is dated ${scraped.date}, not today. The source may not have updated yet.` });
       return;
     }
     const payload = persistQuiz(scraped.questions, scraped.date, scraped.formattedDate, scraped.source);
@@ -65,6 +69,20 @@ async function handleTriggerScrape(_req, res) {
   } catch (err) {
     log(`✖ /api/trigger-scrape error: ${err.message}`);
     sendJson(res, 500, { ok: false, message: err.message });
+  }
+}
+
+// Only allow scraping pages from the known, trusted answer-site domains.
+// /api/fetch-url is otherwise an unauthenticated SSRF vector on this server.
+function isAllowedSourceUrl(u) {
+  try {
+    const parsed = new URL(u);
+    if (parsed.protocol !== 'https:') return false;
+    return SOURCE_URLS.some((s) => {
+      try { return new URL(s).hostname === parsed.hostname; } catch { return false; }
+    });
+  } catch {
+    return false;
   }
 }
 
@@ -77,12 +95,20 @@ async function handleFetchUrl(req, res) {
     // Allow ?url=... too (handy for testing in a browser)
     if (!url) url = new URL(req.url, `http://localhost:${PORT}`).searchParams.get('url');
     if (!url) { sendJson(res, 400, { ok: false, message: 'Missing "url" in request body.' }); return; }
+    if (!isAllowedSourceUrl(url)) {
+      sendJson(res, 403, { ok: false, message: 'URL must be https and one of the known source domains.' });
+      return;
+    }
 
     try {
       log(`▶ /api/fetch-url: scraping ${url}`);
       const scraped = await scrapeQuiz(url);
       if (!scraped || !validateQuestions(scraped.questions)) {
         sendJson(res, 502, { ok: false, message: 'Scrape did not yield 5 valid questions.' });
+        return;
+      }
+      if (isStaleQuiz(scraped.date)) {
+        sendJson(res, 409, { ok: false, message: `Scraped quiz is dated ${scraped.date}, not today. The source may not have updated yet.` });
         return;
       }
       const payload = persistQuiz(scraped.questions, scraped.date, scraped.formattedDate, scraped.source);
@@ -152,7 +178,7 @@ const server = http.createServer((req, res) => {
   return serveStatic(req, res);
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '127.0.0.1', () => {
   log(`══════════════════════════════════════════`);
   log(`  Telenor Quiz Scrape Server`);
   log(`  Listening on http://localhost:${PORT}`);

@@ -100,9 +100,9 @@ let activeQIndex = 0; // 0 to 4
 let currentViewMode = 'tab'; // 'tab' | 'all'
 
 // Data version fingerprint — updated by the fetch script whenever the quiz is
+const DATA_VERSION = 'aug18-2026-v1';
 // republished. It is tracked for traceability but does NOT force a reset:
 // localStorage keeps the last published quiz until a new one arrives.
-const DATA_VERSION = 'aug18-2026-v1';
 
 // Store Management
 class QuizStore {
@@ -426,7 +426,7 @@ function renderSingleQuestionView(q, index, total) {
 
       <!-- Question Stepper Navigation Controls -->
       <div class="flex items-center justify-between pt-2">
-        <button id="prev-q-btn" type="button" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm hover:bg-slate-50 dark:hover:bg-slate-750 transition-all ${index === 0 ? 'opacity-40 cursor-not-allowed' : ''}" ${index === 0 ? 'disabled' : ''}>
+        <button id="prev-q-btn" type="button" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all ${index === 0 ? 'opacity-40 cursor-not-allowed' : ''}" ${index === 0 ? 'disabled' : ''}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
           </svg>
@@ -692,8 +692,11 @@ function setupEventListeners() {
       if (navigator.share) {
         navigator.share(shareData).catch(() => {});
       } else {
-        navigator.clipboard.writeText(`${shareData.text}\nCheck full quiz: ${shareData.url}`);
-        showToast('All quiz answers & link copied to share!', 'success');
+        navigator.clipboard.writeText(`${shareData.text}\nCheck full quiz: ${shareData.url}`).then(() => {
+          showToast('All quiz answers & link copied to share!', 'success');
+        }).catch(() => {
+          showToast('Could not copy automatically. Long-press the text to copy.', 'info');
+        });
       }
     });
   }

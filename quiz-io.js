@@ -44,11 +44,16 @@ export function getFormattedDate(date = new Date()) {
   return `${DAYS[pk.getDay()]}, ${MONTHS[pk.getMonth()]} ${pk.getDate()}, ${pk.getFullYear()}`;
 }
 
-// e.g. "aug05-2026-v1"
+// e.g. "aug05-2026-v1". dateStr is a PK calendar date (YYYY-MM-DD), so we
+// parse the components directly instead of new Date(...), which would parse
+// as UTC and shift the tag by a day on machines west of UTC.
 export function buildVersionTag(dateStr) {
-  const d = new Date(dateStr);
-  const mon = MONTHS[d.getMonth()].slice(0, 3).toLowerCase();
-  return `${mon}${String(d.getDate()).padStart(2, '0')}-${d.getFullYear()}-v1`;
+  const parts = String(dateStr).split('-');
+  if (parts.length !== 3) return '';
+  const [year, month, day] = parts.map(Number);
+  const mon = MONTHS[month - 1];
+  if (!mon) return '';
+  return `${mon.slice(0, 3).toLowerCase()}${String(day).padStart(2, '0')}-${year}-v1`;
 }
 
 export function writeQuizJSON(questions, dateStr, formattedDate) {
