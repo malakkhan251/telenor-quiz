@@ -100,7 +100,7 @@ let activeQIndex = 0; // 0 to 4
 let currentViewMode = 'tab'; // 'tab' | 'all'
 
 // Data version fingerprint — updated by the fetch script whenever the quiz is
-const DATA_VERSION = 'aug19-2026-v1';
+const DATA_VERSION = 'aug20-2026-v1';
 // republished. It is tracked for traceability but does NOT force a reset:
 // localStorage keeps the last published quiz until a new one arrives.
 
@@ -148,6 +148,7 @@ class QuizStore {
 
   // Admin password: Mine1212 (updated from default admin123)
   // Stored in localStorage per browser
+  // Force rebuild trigger comment
   // Safe localStorage parse helper
   _safeGet(key) {
     try {

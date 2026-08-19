@@ -1,72 +1,72 @@
 {
   "id": "quiz-latest",
-  "date": "2026-08-19",
-  "formattedDate": "Wednesday, August 19, 2026",
+  "date": "2026-08-20",
+  "formattedDate": "Thursday, August 20, 2026",
   "category": "MyTelenor App - Play & Win",
-  "lastUpdated": "Today at 12:19 AM",
-  "updatedTimestamp": 1787080772373,
+  "lastUpdated": "Today at 12:29 AM",
+  "updatedTimestamp": 1787167746491,
   "questions": [
     {
       "id": 1,
       "questionNumber": 1,
-      "question": "Makli Necropolis is in which city?",
+      "question": "Clock Tower is in?",
       "options": {
-        "A": "Thatta",
-        "B": "Karachi",
-        "C": "Multan",
-        "D": "Sukkur"
+        "A": "Multan",
+        "B": "Lahore",
+        "C": "Karachi",
+        "D": "Faisalabad"
       },
-      "correctAnswer": "A",
+      "correctAnswer": "D",
       "reward": "20 MBs"
     },
     {
       "id": 2,
       "questionNumber": 2,
-      "question": "Where is shah jahan Mosque?",
+      "question": "Taxila is famous for?",
       "options": {
-        "A": "Karachi",
-        "B": "Hyderabad",
-        "C": "Thatta",
-        "D": "Larkana"
-      },
-      "correctAnswer": "C",
-      "reward": "20 MBs"
-    },
-    {
-      "id": 3,
-      "questionNumber": 3,
-      "question": "Which monument commemorates Lahore Resolution?",
-      "options": {
-        "A": "Minar-E-Pakistan",
-        "B": "Pakistan Monument",
-        "C": "Mazar-E-Quaid",
-        "D": "Bab-E-Khyber"
-      },
-      "correctAnswer": "A",
-      "reward": "20 MBs"
-    },
-    {
-      "id": 4,
-      "questionNumber": 4,
-      "question": "Katas Raj Temples are in ___",
-      "options": {
-        "A": "Okara",
-        "B": "Chakwal",
-        "C": "Jhelum",
-        "D": "Sialkot"
+        "A": "Mosques",
+        "B": "Buddhist Ruins",
+        "C": "Forts",
+        "D": "Beaches"
       },
       "correctAnswer": "B",
       "reward": "20 MBs"
     },
     {
+      "id": 3,
+      "questionNumber": 3,
+      "question": "Which city is famous for Mohenjo-daro?",
+      "options": {
+        "A": "Sukkur",
+        "B": "Hyderabad",
+        "C": "Larkana",
+        "D": "Karachi"
+      },
+      "correctAnswer": "C",
+      "reward": "20 MBs"
+    },
+    {
+      "id": 4,
+      "questionNumber": 4,
+      "question": "Badshahi Mosque was built by ___",
+      "options": {
+        "A": "Aurangzeb",
+        "B": "Akbar",
+        "C": "Babur",
+        "D": "Jahangir"
+      },
+      "correctAnswer": "A",
+      "reward": "20 MBs"
+    },
+    {
       "id": 5,
       "questionNumber": 5,
-      "question": "In which city is Bala Hisar Fort?",
+      "question": "Where is Empress Market?",
       "options": {
-        "A": "Peshawar",
+        "A": "Karachi",
         "B": "Lahore",
-        "C": "Quetta",
-        "D": "Gilgit"
+        "C": "Peshawar",
+        "D": "Quetta"
       },
       "correctAnswer": "A",
       "reward": "20 MBs"
