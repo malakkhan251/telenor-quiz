@@ -1,46 +1,46 @@
 {
   "id": "quiz-latest",
-  "date": "2026-08-20",
-  "formattedDate": "Thursday, August 20, 2026",
+  "date": "2026-08-21",
+  "formattedDate": "Friday, August 21, 2026",
   "category": "MyTelenor App - Play & Win",
-  "lastUpdated": "Today at 12:29 AM",
-  "updatedTimestamp": 1787167746491,
+  "lastUpdated": "Today at 01:04 PM",
+  "updatedTimestamp": 1787299495485,
   "questions": [
     {
       "id": 1,
       "questionNumber": 1,
-      "question": "Clock Tower is in?",
+      "question": "Which fort is in Cholistan Desert?",
       "options": {
-        "A": "Multan",
-        "B": "Lahore",
-        "C": "Karachi",
-        "D": "Faisalabad"
+        "A": "Derawar",
+        "B": "Rohtas",
+        "C": "Ranikot",
+        "D": "Baltit"
       },
-      "correctAnswer": "D",
+      "correctAnswer": "A",
       "reward": "20 MBs"
     },
     {
       "id": 2,
       "questionNumber": 2,
-      "question": "Taxila is famous for?",
+      "question": "Which monument symbolizes pakistan’s independence?",
       "options": {
-        "A": "Mosques",
-        "B": "Buddhist Ruins",
-        "C": "Forts",
-        "D": "Beaches"
+        "A": "Mazar E Quaid",
+        "B": "Pakistan Monument",
+        "C": "Minar E Pakistan",
+        "D": "Badshahi Mosque"
       },
-      "correctAnswer": "B",
+      "correctAnswer": "C",
       "reward": "20 MBs"
     },
     {
       "id": 3,
       "questionNumber": 3,
-      "question": "Which city is famous for Mohenjo-daro?",
+      "question": "Lok virsa Museum is in?",
       "options": {
-        "A": "Sukkur",
-        "B": "Hyderabad",
-        "C": "Larkana",
-        "D": "Karachi"
+        "A": "Lahore",
+        "B": "Karachi",
+        "C": "Islamabad",
+        "D": "Multan"
       },
       "correctAnswer": "C",
       "reward": "20 MBs"
@@ -48,12 +48,12 @@
     {
       "id": 4,
       "questionNumber": 4,
-      "question": "Badshahi Mosque was built by ___",
+      "question": "Where is the Tomb of Allama Iqbal?",
       "options": {
-        "A": "Aurangzeb",
-        "B": "Akbar",
-        "C": "Babur",
-        "D": "Jahangir"
+        "A": "Lahore",
+        "B": "Minar E Pakistan",
+        "C": "Faisal Mosque",
+        "D": "Mazar E Quaid"
       },
       "correctAnswer": "A",
       "reward": "20 MBs"
@@ -61,14 +61,14 @@
     {
       "id": 5,
       "questionNumber": 5,
-      "question": "Where is Empress Market?",
+      "question": "Hiran Minar is located in which city?",
       "options": {
-        "A": "Karachi",
-        "B": "Lahore",
-        "C": "Peshawar",
-        "D": "Quetta"
+        "A": "Jacobabad",
+        "B": "Islamabad",
+        "C": "Sheikhupura",
+        "D": "Multan"
       },
-      "correctAnswer": "A",
+      "correctAnswer": "C",
       "reward": "20 MBs"
     }
   ]
