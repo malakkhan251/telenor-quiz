@@ -1,72 +1,72 @@
 {
   "id": "quiz-latest",
-  "date": "2026-08-21",
-  "formattedDate": "Friday, August 21, 2026",
+  "date": "2026-08-22",
+  "formattedDate": "Saturday, August 22, 2026",
   "category": "MyTelenor App - Play & Win",
-  "lastUpdated": "Today at 01:04 PM",
-  "updatedTimestamp": 1787299495485,
+  "lastUpdated": "Today at 01:22 PM",
+  "updatedTimestamp": 1787386933439,
   "questions": [
     {
       "id": 1,
       "questionNumber": 1,
-      "question": "Which fort is in Cholistan Desert?",
+      "question": "___ is the national language of pakistan?",
       "options": {
-        "A": "Derawar",
-        "B": "Rohtas",
-        "C": "Ranikot",
-        "D": "Baltit"
+        "A": "Sindhi",
+        "B": "Punjabi",
+        "C": "English",
+        "D": "Urdu"
       },
-      "correctAnswer": "A",
+      "correctAnswer": "D",
       "reward": "20 MBs"
     },
     {
       "id": 2,
       "questionNumber": 2,
-      "question": "Which monument symbolizes pakistan’s independence?",
+      "question": "What is the national animal of pakistan?",
       "options": {
-        "A": "Mazar E Quaid",
-        "B": "Pakistan Monument",
-        "C": "Minar E Pakistan",
-        "D": "Badshahi Mosque"
+        "A": "Snow Leopard",
+        "B": "Markhor",
+        "C": "Lion",
+        "D": "Bear"
       },
-      "correctAnswer": "C",
+      "correctAnswer": "B",
       "reward": "20 MBs"
     },
     {
       "id": 3,
       "questionNumber": 3,
-      "question": "Lok virsa Museum is in?",
+      "question": "What is the national bird of pakistan?",
       "options": {
-        "A": "Lahore",
-        "B": "Karachi",
-        "C": "Islamabad",
-        "D": "Multan"
-      },
-      "correctAnswer": "C",
-      "reward": "20 MBs"
-    },
-    {
-      "id": 4,
-      "questionNumber": 4,
-      "question": "Where is the Tomb of Allama Iqbal?",
-      "options": {
-        "A": "Lahore",
-        "B": "Minar E Pakistan",
-        "C": "Faisal Mosque",
-        "D": "Mazar E Quaid"
+        "A": "Chakor",
+        "B": "Peacock",
+        "C": "Falcon",
+        "D": "Eagle"
       },
       "correctAnswer": "A",
       "reward": "20 MBs"
     },
     {
+      "id": 4,
+      "questionNumber": 4,
+      "question": "Which of the following is the national flower of pakistan?",
+      "options": {
+        "A": "Rose",
+        "B": "Jasmine",
+        "C": "Sunflower",
+        "D": "Tulip"
+      },
+      "correctAnswer": "B",
+      "reward": "20 MBs"
+    },
+    {
       "id": 5,
       "questionNumber": 5,
-      "question": "Hiran Minar is located in which city?",
+      "question": "What is the national tree of pakistan?",
       "options": {
-        "A": "Jacobabad",
-        "B": "Islamabad",
-        "C": "Sheikhupura",
-        "D": "Multan"
+        "A": "Sheesham",
+        "B": "Neem",
+        "C": "Deodar",
+        "D": "Pine"
       },
       "correctAnswer": "C",
       "reward": "20 MBs"
