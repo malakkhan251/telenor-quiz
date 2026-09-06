@@ -1,72 +1,72 @@
 {
   "id": "quiz-latest",
-  "date": "2026-08-22",
-  "formattedDate": "Saturday, August 22, 2026",
+  "date": "2026-09-06",
+  "formattedDate": "Sunday, September 6, 2026",
   "category": "MyTelenor App - Play & Win",
-  "lastUpdated": "Today at 01:22 PM",
-  "updatedTimestamp": 1787386933439,
+  "lastUpdated": "Today at 01:20 PM",
+  "updatedTimestamp": 1788682830050,
   "questions": [
     {
       "id": 1,
       "questionNumber": 1,
-      "question": "___ is the national language of pakistan?",
+      "question": "Complete the lyric:”Dil Dil pakistan, Jaan Jaan ___”",
       "options": {
-        "A": "Sindhi",
-        "B": "Punjabi",
-        "C": "English",
-        "D": "Urdu"
+        "A": "Watan",
+        "B": "Hindustan",
+        "C": "Pakistan",
+        "D": "Naujawan"
       },
-      "correctAnswer": "D",
+      "correctAnswer": "C",
       "reward": "20 MBs"
     },
     {
       "id": 2,
       "questionNumber": 2,
-      "question": "What is the national animal of pakistan?",
+      "question": "Who sang the iconic national song “Dil Dil pakistan”?",
       "options": {
-        "A": "Snow Leopard",
-        "B": "Markhor",
-        "C": "Lion",
-        "D": "Bear"
-      },
-      "correctAnswer": "B",
-      "reward": "20 MBs"
-    },
-    {
-      "id": 3,
-      "questionNumber": 3,
-      "question": "What is the national bird of pakistan?",
-      "options": {
-        "A": "Chakor",
-        "B": "Peacock",
-        "C": "Falcon",
-        "D": "Eagle"
+        "A": "Vital Signs",
+        "B": "Junoon",
+        "C": "Strings",
+        "D": "Awaz"
       },
       "correctAnswer": "A",
       "reward": "20 MBs"
     },
     {
-      "id": 4,
-      "questionNumber": 4,
-      "question": "Which of the following is the national flower of pakistan?",
+      "id": 3,
+      "questionNumber": 3,
+      "question": "Complete the lyric:”jeevay jeevay___”",
       "options": {
-        "A": "Rose",
-        "B": "Jasmine",
-        "C": "Sunflower",
-        "D": "Tulip"
+        "A": "Naujawan",
+        "B": "Pakistan",
+        "C": "Mera Watan",
+        "D": "Quaid-E-Aza"
       },
       "correctAnswer": "B",
       "reward": "20 MBs"
     },
     {
+      "id": 4,
+      "questionNumber": 4,
+      "question": "“Sohni Dharti Allah Rakhay” is a famous pakistani___ song.",
+      "options": {
+        "A": "Wedding",
+        "B": "Folk",
+        "C": "National",
+        "D": "Film"
+      },
+      "correctAnswer": "C",
+      "reward": "20 MBs"
+    },
+    {
       "id": 5,
       "questionNumber": 5,
-      "question": "What is the national tree of pakistan?",
+      "question": "Complete the lyric:”Sohni Dharti Allah Rakhay, Qadam Qadam___”",
       "options": {
-        "A": "Sheesham",
-        "B": "Neem",
-        "C": "Deodar",
-        "D": "Pine"
+        "A": "Roshan",
+        "B": "Khushhaal",
+        "C": "Aabad",
+        "D": "Shaad"
       },
       "correctAnswer": "C",
       "reward": "20 MBs"
